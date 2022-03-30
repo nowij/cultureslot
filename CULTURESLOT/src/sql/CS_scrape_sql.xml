@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org.dtd.mybatis-3-mapper.dtd">
+	<!-- id가 전부 달라야함 -->
+<mapper namespace="CS_scrape">
+	<insert id = "scrape">
+		insert into CS_scrape values (cs_scrape_seq.nextval, #{content_num}, #{id}, #{category}, #{title}, #{img}, #{year})
+	</insert>
+	
+	<select id = "scrapeList" resultType = "scrapeDTO" parameterType = "scrapeDTO">
+		select * from(select scrape_num, content_num, id, category, title, img, year, rownum r
+		from (select * from CS_scrape where id=#{id}) order by scrape_num desc) where r between #{start} and #{end}
+	</select>
+	
+	<select id = "scrapeCount" resultType = "int" parameterType = "scrapeDTO">
+		select count(*) from CS_scrape where id = #{id}
+	</select>
+	
+	<select id = "scrapeCheck" parameterType="scrapeDTO" resultType="int">
+		select count(*) from CS_scrape where id = #{id} and title = #{title}   
+	</select> 
+	
+	<delete id = "deleteScrape" parameterType = "scrapeDTO">
+		delete from CS_scrape where id = #{id} and content_num=#{content_num} and category=#{category}
+	</delete>
+</mapper>

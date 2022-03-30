@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org.dtd.mybatis-3-mapper.dtd">
+	<!-- id가 전부 달라야함 -->
+<mapper namespace="CS_member">
+	
+	<select id="logincheck" resultType="int" parameterType="memberDTO">
+		select count(*) from CS_member where id=#{id} and pw=#{pw}
+	</select>
+	
+	<!-- 0615 수정 -->
+	<insert id="join" parameterType="memberDTO">
+		insert into CS_member values (#{id}, #{pw} , #{name} , #{birth}, #{gender}, #{email}, sysdate, #{key})
+	</insert>
+	
+	<select id="myInfo" resultType="memberDTO" parameterType="String">
+		select * from CS_member where id = #{id}  
+	</select>
+	
+	<update id="modifyInfo" parameterType="memberDTO">
+	 	update CS_member set pw=#{pw}, name=#{name}, email=#{email} where id = #{id} 	
+	</update> 
+	
+	<delete id = "delete" parameterType="memberDTO">
+		delete from CS_member where id = #{id} and pw = #{pw} 	
+	</delete>
+		
+	<select id = "idcheck" parameterType="String" resultType="int">
+		select count(*) from CS_member where id = #{id}   
+	</select> 
+	
+	
+	<!-- 0615 수정 -->
+	<update id="sendKey" parameterType="memberDTO">
+		update CS_member set key=#{key} where id=#{id}
+	</update>
+	
+	<update id="updateKey" parameterType="memberDTO">
+		update CS_member set key=#{key} where id=#{id}
+	</update>
+	<select id="confirmKey" resultType="String" parameterType="String">
+		select key from CS_member where id=#{id}
+	</select>
+
+</mapper>

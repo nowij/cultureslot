@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org.dtd.mybatis-3-mapper.dtd">
+	
+	<mapper namespace="CS_RcComment">
+		<select id="getAllRcComment" parameterType="int" resultType="RcCommentDTO">
+			select * from CS_rccomment where rc_num = #{rc_num} order by comment_num
+		</select>
+		<insert id="insertRcComment" parameterType="RcCommentDTO">
+			insert into CS_rccomment values(comment_num_seq.nextval, #{rc_num},#{category},#{rc_writer}, #{content})
+		</insert>
+		<delete id="deleteRcComment" parameterType="RcCommentDTO">
+			delete from CS_rccomment where rc_num = #{rc_num} and comment_num = #{comment_num}
+		</delete>
+		<select id="selectMyRccomment" parameterType="int" resultType="RcCommentDTO">
+			select * from CS_rccomment where rc_num = #{rc_num} order by comment_num DESC
+		</select>
+		<delete id="deleteAllrccomment" parameterType="int">
+			delete from CS_rccomment where rc_num=#{rc_num}
+		</delete>
+	</mapper>

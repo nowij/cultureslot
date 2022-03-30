@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org.dtd.mybatis-3-mapper.dtd">
+	<!-- id가 전부 달라야함 -->
+	
+	<mapper namespace="CS_reContent">
+		<delete id = "myRCdelete" parameterType = "requestContentDTO">
+			 delete from CS_requestcontent where id = #{id} and rc_num=#{rc_num}
+		</delete>
+		 <update id = "myRCmodify" parameterType  = "requestContentDTO">
+		 	update CS_requsetcontent set content =#{content},title=#{title} where rc_num=#{rc_num}
+		 </update>
+		 <select id = "myRClist" parameterType= "String" resultType="requestContentDTO">
+		 	select * from CS_requestcontent where id=#{id}      
+		 </select>
+		
+	</mapper>

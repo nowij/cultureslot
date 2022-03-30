@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xmlns:context="http://www.springframework.org/schema/context"
+	   xmlns:p="http://www.springframework.org/schema/p"
+	   xmlns:aop="http://www.springframework.org/schema/aop"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans
+	   http://www.springframework.org/schema/beans/spring-beans.xsd
+	   http://www.springframework.org/schema/context
+	   http://www.springframework.org/schema/context/spring-context-4.3.xsd
+	   http://www.springframework.org/schema/aop
+	   http://www.springframework.org/schema/aop/spring-aop-4.3.xsd">
+	   
+	   <!-- 메인 DAO -->
+	   <bean id="mainDAO" class="bean.CS_main.MainDAO"></bean>
+	   
+	   <!-- 상세페이지 DTO/DAO -->
+	   <bean id ="contentDAO" class="bean.CS_main.ContentDAO"/>
+	   <bean id ="contentDTO" class="bean.CS_main.ContentDTO"/>
+
+	   <!-- 검색 DAO -->
+	   <bean id="searchDAO" class="bean.CS_main.SearchDAO"></bean>
+	   
+	   <!--  회원 DTO / DAO -->
+	   <bean id="memberDAO" class="bean.CS_member.MemberDAO">
+	   		
+	   </bean>
+	   
+	   <!-- 공지사항 DTO / DAO -->
+	   <bean id = "noticeDTO" class="bean.CS_board.NoticeDTO"/>
+	   <bean id = "noticeDAO" class="bean.CS_board.NoticeDAO"/>
+	   
+	   <!-- 자료 요청 DTO / DAO -->
+	   <bean id = "requestContentDTO" class="bean.CS_board.RequestContentDTO"/>
+	   <bean id = "requestContentDAO" class="bean.CS_board.RequestContentDAO"/>
+	   
+	   <!-- 컨텐츠 댓글 DAO -->
+	   <bean id="commentDAO" class="bean.CS_board.CommentDAO" >
+	   	<constructor-arg ref="sqlSession"/>
+	   </bean>
+	   
+		<!-- 자료요청 댓글 DAO -->
+	   <bean id="RcCommentDAO" class="bean.CS_board.RcCommentDAO" >
+	   	<constructor-arg ref="sqlSession"/>
+	   </bean>	   
+	   <!-- 스크랩  DAO,DTO -->
+	   <bean id="scrapeDAO" class="bean.CS_member.ScrapeDAO" />
+	   <bean id="scrapeDTO" class="bean.CS_member.ScrapeDTO" />
+	   
+	     <!-- 관리자 DAO -->
+	   <bean id="admincontentDAO" class="bean.CS_admin.AdminContentDAO"/>
+	   
+	   <!-- 이메일 본인인증 -->
+	   <bean id="mailsender" class="bean.CS_admin.MailServiceDAO"/>
+	   
+	   <!-- 통계 DAO -->
+	   <bean id="statisticsDAO" class="bean.CS_admin.StatisticsDAO"/>
+	   
+	   <context:component-scan base-package="model.*"/>
+</beans>

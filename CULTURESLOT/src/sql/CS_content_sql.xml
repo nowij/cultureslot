@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org.dtd.mybatis-3-mapper.dtd">
+
+<mapper namespace = "CS_content">
+	<!-- 0704 지원 수정 -->
+	<select id = "countMusicYear" parameterType="contentDTO" resultType="int">
+		select count(*) from cs_music where year = #{year} and country_category=#{country_category}
+	</select>
+
+	<select id = "countMovieYear" parameterType="contentDTO" resultType="int">
+		select count(*) from cs_Movie where year = #{year} and country_category=#{country_category}
+	</select>
+
+	<select id = "countDramaYear" parameterType="contentDTO" resultType="int">
+		select count(*) from cs_Drama where year = #{year} and country_category=#{country_category}
+	</select>
+
+	<select id = "countAniYear" parameterType="contentDTO" resultType="int">
+		select count(*) from cs_animation where year = #{year} and country_category=#{country_category}
+	</select>
+
+	<!-- 0629 0701 0704 지원 수정 -->
+	<select id = "selectMusicList" parameterType="contentDTO" resultType="contentDTO">
+		select title_image, title, creator, content_num
+		from (select content_num,year,release_date,genre,title,creator,title_image,introduction,country_category,
+		country_name,video,production, distribution, grade, remake, staff, awards, lyrics, album_title, album_type,
+		soundtrack, amount, ref_video, category, read_count, scrape_count, rownum r
+		from (select *  from cs_music where year=#{year} and country_category=#{country_category}) order by year desc, title) where r between #{start} and #{end}
+	</select>
+
+	<select id = "selectMovieList" parameterType="contentDTO" resultType="contentDTO">
+		select title_image, title, creator, content_num
+		from (select content_num,year,release_date,category,genre,title,creator,title_image,introduction,country_category,
+		country_name,video,production, distribution, grade, runtime, remake, cast, staff, awards, series,
+		soundtrack, amount, ref_video,read_count, scrape_count, rownum r
+		from (select *  from cs_movie where year=#{year} and country_category=#{country_category}) order by year desc, title) where r between #{start} and #{end}
+	</select>
+
+	<select id = "selectDramaList" parameterType="contentDTO" resultType="contentDTO">
+		select title_image, title, creator, content_num
+		from (select content_num,year,release_date,category, genre,title,creator,title_image,introduction,country_category,
+		country_name,video,production, distribution, grade, runtime, remake, cast, staff, awards, series, trilogy,
+		soundtrack, amount, ref_video, read_count, scrape_count, rownum r
+		from (select *  from cs_drama where year=#{year} and country_category=#{country_category}) order by year desc, title) where r between #{start} and #{end}
+	</select>
+
+	<select id = "selectAniList" parameterType="contentDTO" resultType="contentDTO">
+		select title_image, title, creator, content_num
+		from (select content_num,year,release_date,category, genre,title,creator,title_image,introduction,country_category,
+		country_name,video,production, distribution, grade, runtime, remake, cast, staff, series, trilogy,soundtrack, ref_video, read_count, scrape_count, rownum r
+		from (select *  from cs_animation where year=#{year} and country_category=#{country_category}) order by year desc, title) where r between #{start} and #{end}
+	</select>
+	
+	<!-- 0701 지원 수정 -->
+	<select id = "musicContent" parameterType = "int" resultType = "contentDTO">
+		select * from cs_music where content_num = #{value}
+	</select>
+	
+	<select id = "movieContent" parameterType = "int" resultType = "contentDTO">
+		select * from cs_movie where content_num = #{value}
+	</select>
+	
+	<select id = "dramaContent" parameterType = "int" resultType = "contentDTO">
+		select * from cs_drama where content_num = #{value}
+	</select>
+	
+	<select id = "aniContent" parameterType = "int" resultType = "contentDTO">
+		select * from cs_animation where content_num = #{value}
+	</select>	
+	
+	<!-- 0706 은솔 수정 -->
+	<!-- 조회수 증가 -->
+	<update id="updateReadCount_music" parameterType="int">
+		update cs_music set read_count = read_count+1 where content_num = #{value}
+	</update>
+	<update id="updateReadCount_movie" parameterType="int">
+		update cs_movie set read_count = read_count+1 where content_num = #{value}
+	</update>
+	<update id="updateReadCount_drama" parameterType="int">
+		update cs_drama set read_count = read_count+1 where content_num = #{value}
+	</update>
+	<update id="updateReadCount_animation" parameterType="int">
+		update cs_animation set read_count = read_count+1 where content_num = #{value}
+	</update>
+</mapper>

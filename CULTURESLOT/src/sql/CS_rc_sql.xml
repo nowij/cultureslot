@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+  <mapper namespace="rc">
+  	<insert id = "insertRequest" parameterType="requestContentDTO">
+  		insert into CS_requestContent values(rc_num_seq.nextval, #{id}, #{category}, #{title}, #{content}, sysdate, #{hit}, #{comment_state})
+  	</insert>
+  	
+  	<select id = "requestCount" resultType="int">
+  		select count(*) from CS_requestContent 
+  	</select> 
+  	
+  	<select id = "RCList" resultType="requestContentDTO">
+  		select * from CS_requestContent order by reg_date desc
+  	</select>
+  	
+  	<select id = "countHit" parameterType="int" resultType="int">
+  		select hit from CS_requestContent where rc_num = #{value}
+  	</select>
+  	
+  	<update id= "upHit" parameterType="requestContentDTO">
+  		update CS_requestContent set hit = #{hit}+1 where rc_num = #{rc_num}
+  	</update>
+  	
+  	<select id = "selectRcContent" parameterType="int" resultType="requestContentDTO">
+  		select * from CS_requestContent where rc_num = #{value}
+  	</select>
+  	
+  	<select id = "selectrc_num" parameterType="String" resultType="int">
+  		select rc_num from CS_requestContent where rc_num = #{value}
+  	</select>
+  	
+  	<update id="modifyRcContent" parameterType="requestContentDTO">
+  		update CS_requestContent set title = #{title}, category = #{category}, 
+  		content = #{content}, reg_date = sysdate where rc_num = #{rc_num}
+  	</update>
+
+  	<delete id = "deleteRcContent" parameterType="int">
+  		delete from CS_requestContent where rc_num = #{value}
+  	</delete>
+  	<select id = "commentCount" parameterType="int" resultType="int">
+  		select count(*) from CS_rccomment where rc_num=#{rc_num}
+  	</select>
+	 <update id ="updateState" parameterType="int">
+	 	update CS_requestContent set comment_state = 1 where rc_num = #{rc_num}
+	 </update>
+	 
+	 <update id ="downState" parameterType="int">
+	 	update CS_requestContent set comment_state = 0 where rc_num = #{rc_num}
+	 </update>
+	
+	<select id = "myCount" parameterType="String" resultType="int">
+		select count(*) from CS_requestcontent where id = #{id}
+	</select>
+	<select id = "myRClist" parameterType= "String" resultType="requestContentDTO">
+		select * from CS_requestcontent where id = #{id} order by reg_date
+	</select> 
+	<select id = "getMyRc" parameterType="int" resultType="requestContentDTO">
+		select * from CS_requestcontent where rc_num=#{rc_num}
+	</select>
+	<delete id = "myRCdelete" parameterType = "requestContentDTO">
+		delete from CS_requestcontent where id = #{id} and rc_num=#{rc_num}
+	</delete>
+	
+	<update id = "myRCmodify" parameterType  = "requestContentDTO">
+		update CS_requsetcontent set content =#{content},title=#{title} where rc_num=#{rc_num}
+	</update>
+	
+  </mapper>

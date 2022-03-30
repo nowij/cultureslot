@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org.dtd.mybatis-3-mapper.dtd">
+
+<mapper namespace = "CS_main">
+	<select id = "searchCount" resultType = "int" parameterType = "String">
+		select sum(cnt) from (
+		select count(*) cnt from cs_music where genre like '%'||#{search}||'%'
+		or title like '%'||#{search}||'%' or creator like '%'||#{search}||'%'
+		or country_category like '%'||#{search}||'%' or country_name like '%'||#{search}||'%'
+		or production like '%'||#{search}||'%' or distribution like '%'||#{search}||'%'
+		or staff like '%'||#{search}||'%' or lyrics like '%'||#{search}||'%'
+		or album_title like '%'||#{search}||'%' or soundtrack like '%'||#{search}||'%'
+		union all
+		select count(*) from cs_movie where genre like '%'||#{search}||'%'
+		or title like '%'||#{search}||'%' or creator like '%'||#{search}||'%'
+		or country_category like '%'||#{search}||'%' or country_name like '%'||#{search}||'%'
+		or production like '%'||#{search}||'%' or distribution like '%'||#{search}||'%'
+		or cast like '%'||#{search}||'%' or staff like '%'||#{search}||'%'
+		or awards like '%'||#{search}||'%' or soundtrack like '%'||#{search}||'%'
+		union all
+		select count(*) from cs_drama where genre like '%'||#{search}||'%'
+		or title like '%'||#{search}||'%' or creator like '%'||#{search}||'%'
+		or country_category like '%'||#{search}||'%' or country_name like '%'||#{search}||'%'
+		or production like '%'||#{search}||'%' or distribution like '%'||#{search}||'%'
+		or cast like '%'||#{search}||'%' or staff like '%'||#{search}||'%'
+		or awards like '%'||#{search}||'%' or soundtrack like '%'||#{search}||'%'
+		union all
+		select count(*) from cs_animation where genre like '%'||#{search}||'%'
+		or title like '%'||#{search}||'%' or creator like '%'||#{search}||'%'
+		or country_category like '%'||#{search}||'%' or country_name like '%'||#{search}||'%'
+		or production like '%'||#{search}||'%' or distribution like '%'||#{search}||'%'
+		or cast like '%'||#{search}||'%' or staff like '%'||#{search}||'%'
+		or trilogy like '%'||#{search}||'%' or soundtrack like '%'||#{search}||'%'
+		)
+	</select>
+	<select id = "searchMusicCount" resultType = "int" parameterType = "String">
+		select count(*) from cs_music where genre like '%'||#{search}||'%'
+		or title like '%'||#{search}||'%' or creator like '%'||#{search}||'%'
+		or country_category like '%'||#{search}||'%' or country_name like '%'||#{search}||'%'
+		or production like '%'||#{search}||'%' or distribution like '%'||#{search}||'%'
+		or staff like '%'||#{search}||'%' or lyrics like '%'||#{search}||'%'
+		or album_title like '%'||#{search}||'%' or soundtrack like '%'||#{search}||'%'
+	</select>
+	
+	<!-- 0701 지원 수정 -->
+	<select id = "searchMusic" resultType = "SearchDTO" parameterType = "String">
+		select title_image, title, creator, year, content_num, category from cs_music where genre like '%'||#{search}||'%'
+		or title like '%'||#{search}||'%' or creator like '%'||#{search}||'%'
+		or country_category like '%'||#{search}||'%' or country_name like '%'||#{search}||'%'
+		or production like '%'||#{search}||'%' or distribution like '%'||#{search}||'%'
+		or staff like '%'||#{search}||'%' or lyrics like '%'||#{search}||'%'
+		or album_title like '%'||#{search}||'%' or soundtrack like '%'||#{search}||'%'
+	</select>
+	
+	<select id = "searchMovieCount" resultType = "int" parameterType = "String">
+		select count(*) from cs_movie where genre like '%'||#{search}||'%'
+		or title like '%'||#{search}||'%' or creator like '%'||#{search}||'%'
+		or country_category like '%'||#{search}||'%' or country_name like '%'||#{search}||'%'
+		or production like '%'||#{search}||'%' or distribution like '%'||#{search}||'%'
+		or cast like '%'||#{search}||'%' or staff like '%'||#{search}||'%'
+		or awards like '%'||#{search}||'%' or soundtrack like '%'||#{search}||'%'
+	</select>
+	
+	<select id = "searchMovie" resultType = "SearchDTO" parameterType = "String">
+		select title_image, title, creator, year, category, content_num from cs_movie where genre like '%'||#{search}||'%'
+		or title like '%'||#{search}||'%' or creator like '%'||#{search}||'%'
+		or country_category like '%'||#{search}||'%' or country_name like '%'||#{search}||'%'
+		or production like '%'||#{search}||'%' or distribution like '%'||#{search}||'%'
+		or cast like '%'||#{search}||'%' or staff like '%'||#{search}||'%'
+		or awards like '%'||#{search}||'%' or soundtrack like '%'||#{search}||'%'
+	</select>
+
+	<select id = "searchDramaCount" resultType = "int" parameterType = "String">
+		select count(*) from cs_drama where genre like '%'||#{search}||'%'
+		or title like '%'||#{search}||'%' or creator like '%'||#{search}||'%'
+		or country_category like '%'||#{search}||'%' or country_name like '%'||#{search}||'%'
+		or production like '%'||#{search}||'%' or distribution like '%'||#{search}||'%'
+		or cast like '%'||#{search}||'%' or staff like '%'||#{search}||'%'
+		or awards like '%'||#{search}||'%' or soundtrack like '%'||#{search}||'%'
+	</select>
+	
+	<select id = "searchDrama" resultType = "SearchDTO" parameterType = "String">
+		select title_image, title, creator, year, category, content_num from cs_drama where genre like '%'||#{search}||'%'
+		or title like '%'||#{search}||'%' or creator like '%'||#{search}||'%'
+		or country_category like '%'||#{search}||'%' or country_name like '%'||#{search}||'%'
+		or production like '%'||#{search}||'%' or distribution like '%'||#{search}||'%'
+		or cast like '%'||#{search}||'%' or staff like '%'||#{search}||'%'
+		or awards like '%'||#{search}||'%' or soundtrack like '%'||#{search}||'%'
+	</select>
+
+	<select id = "searchAnimationCount" resultType = "int" parameterType = "String">
+		select count(*) from cs_animation where genre like '%'||#{search}||'%'
+		or title like '%'||#{search}||'%' or creator like '%'||#{search}||'%'
+		or country_category like '%'||#{search}||'%' or country_name like '%'||#{search}||'%'
+		or production like '%'||#{search}||'%' or distribution like '%'||#{search}||'%'
+		or cast like '%'||#{search}||'%' or staff like '%'||#{search}||'%'
+		or trilogy like '%'||#{search}||'%' or soundtrack like '%'||#{search}||'%'
+	</select>
+
+	<select id = "searchAnimation" resultType = "SearchDTO" parameterType = "String">
+		select title_image, title, creator, year, category, content_num from cs_animation where genre like '%'||#{search}||'%'
+		or title like '%'||#{search}||'%' or creator like '%'||#{search}||'%'
+		or country_category like '%'||#{search}||'%' or country_name like '%'||#{search}||'%'
+		or production like '%'||#{search}||'%' or distribution like '%'||#{search}||'%'
+		or cast like '%'||#{search}||'%' or staff like '%'||#{search}||'%'
+		or trilogy like '%'||#{search}||'%' or soundtrack like '%'||#{search}||'%'
+	</select>
+
+</mapper>

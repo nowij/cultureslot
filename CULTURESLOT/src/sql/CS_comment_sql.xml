@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org.dtd.mybatis-3-mapper.dtd">
+	
+	<mapper namespace="CS_comment">
+		
+		<select id="getAllComment" resultType="commentDTO">
+			select * from CS_comment order by comment_num DESC
+		</select>
+		<insert id="insertComment" parameterType="commentDTO">
+			insert into CS_comment values(CS_comment_seq.nextval, #{content}, #{content_num}, #{id}, #{category}, #{title}, #{year})
+		</insert>
+		<delete id="deleteComment" parameterType="commentDTO">
+			delete from CS_comment where id=#{id} and comment_num=#{comment_num}
+		</delete>
+		
+		<!-- 내가 쓴 댓글 목록 -->
+		<select id="selectMyComment" parameterType="commentDTO" resultType="commentDTO">
+			select * from(select comment_num, content, content_num, id, category, title, year, rownum r
+			from(select * from CS_comment where id=#{id} order by comment_num DESC)) where r between #{start} and #{end}
+		</select>
+		<delete id="deleteAllComment" parameterType="int">
+			delete from CS_comment where content_num=#{content_num}
+		</delete>
+		<select id = "countMyComment" parameterType="String" resultType="int">
+			select count(*) from CS_comment where id=#{id}
+		</select>
+	</mapper>

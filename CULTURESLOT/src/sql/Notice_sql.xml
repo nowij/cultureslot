@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="notice">
+	<insert id="inputNotice" parameterType="noticeDTO">
+		insert into CS_notice values(CS_notice_seq.nextval, #{n_subject}, #{n_writer}, #{n_content}, sysdate) 
+	</insert>
+	
+	<select id="noticeCount" resultType="int">
+		select count(*) from CS_notice
+	</select>
+	
+	<select id="noticeList" resultType="noticeDTO">
+		select * from CS_notice order by n_reg
+	</select>
+	
+	<select id="selectNum" parameterType="String" resultType="String">
+		select n_num from CS_notice where n_num = #{value}
+	</select>
+	
+	<select id="selectNotice" parameterType="int" resultType="noticeDTO">
+		select * from CS_notice where n_num = #{value}
+	</select>
+	
+	<update id="modifyNotice" parameterType="noticeDTO">
+		update CS_notice set  n_subject = #{n_subject}, n_content = #{n_content}, n_reg = sysdate where n_num = #{n_num}
+	</update>
+
+	<delete id="deleteNotice" parameterType="String">
+		delete from CS_notice where n_num = #{value}
+	</delete>
+</mapper>
+
+
+

@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org.dtd.mybatis-3-mapper.dtd">
+	
+<mapper namespace="CS_admin">
+	<!-- 콘텐츠 전체 목록 불러오는 sql 0705 지원 수정-->
+	<select id="contentList_music" resultType="contentDTO" parameterType="contentDTO">
+		select *
+		from (select content_num,year,release_date,genre,title,creator,title_image,introduction,country_category,
+		country_name,video,production, distribution, grade, remake, staff, awards, lyrics, album_title, album_type,
+		soundtrack, amount, ref_video, category, read_count, scrape_count, rownum r
+		from (select * from cs_music where country_category=#{country_category} and year=#{year} order by year desc, title) order by year desc, title) where r between #{start} and #{end}
+	</select>
+	<select id="contentList_movie" resultType="contentDTO" parameterType="contentDTO">
+		select *
+		from (select content_num,year,release_date,category,genre,title,creator,title_image,introduction,country_category,
+		country_name,video,production, distribution, grade, runtime, remake, cast, staff, awards, series,
+		soundtrack, amount, ref_video,read_count, scrape_count, rownum r
+		from (select * from cs_movie where country_category=#{country_category} and year=#{year} order by year desc, title) order by year desc, title) where r between #{start} and #{end}
+	</select>
+	<select id="contentList_drama" resultType="contentDTO" parameterType="contentDTO">
+		select *
+		from (select content_num,year,release_date,category, genre,title,creator,title_image,introduction,country_category,
+		country_name,video,production, distribution, grade, runtime, remake, cast, staff, awards, series, trilogy,
+		soundtrack, amount, ref_video, read_count, scrape_count, rownum r
+		from (select * from cs_drama where country_category=#{country_category} and year=#{year} order by year desc, title) order by year desc, title) where r between #{start} and #{end}
+	</select>
+	<select id="contentList_ani" resultType="contentDTO" parameterType="contentDTO">
+		select *
+		from (select content_num,year,release_date,category, genre,title,creator,title_image,introduction,country_category,
+		country_name,video,production, distribution, grade, runtime, remake, cast, staff, series, trilogy,soundtrack, ref_video, read_count, scrape_count, rownum r
+		from (select * from cs_animation where country_category=#{country_category} and year=#{year} order by year desc, title) order by year desc, title) where r between #{start} and #{end}
+	</select>
+	
+	
+	<!-- 콘텐츠 추가 sql -->
+	<insert id="musicInsert" parameterType="contentDTO">
+		insert into CS_music (content_num, year, release_date, genre, title, creator, title_image, introduction, country_category, country_name,
+		video, production, distribution, grade, remake, staff, awards, lyrics, album_title, album_type, soundtrack,
+		amount, ref_video, category, img_path)
+		values (CS_music_seq.nextval,#{year},#{release_date},#{genre},#{title},#{creator},#{title_image},#{introduction},#{country_category},#{country_name},
+		#{video},#{production},#{distribution},#{grade},#{remake},#{staff},#{awards},#{lyrics},#{album_title},#{album_type},#{soundtrack},
+		#{amount},#{ref_video},#{category}, #{img_path})
+	</insert>
+	
+	<insert id="movieInsert" parameterType="contentDTO">
+		insert into CS_movie (content_num, year, release_date, genre, title, creator, title_image, introduction, country_category, country_name, video, production, distribution, grade,
+		runtime, remake, cast, staff, awards, series, soundtrack, amount, ref_video, category, img_path)
+		values (CS_movie_seq.nextval,#{year},#{release_date},#{genre},#{title},#{creator},#{title_image},#{introduction},#{country_category},#{country_name},#{video},#{production},#{distribution},#{grade},
+		#{runtime},#{remake},#{cast},#{staff},#{awards},#{series},#{soundtrack},#{amount},#{ref_video},#{category}, #{img_path})
+	</insert>
+	
+	<insert id="dramaInsert" parameterType="contentDTO">
+		insert into CS_drama (content_num, year, release_date, genre, title, creator, title_image, introduction, country_category, country_name, video, production, distribution, grade,
+		runtime, remake, cast, staff, awards, series, trilogy, soundtrack, amount, ref_video, category, img_path)
+		values (CS_drama_seq.nextval,#{year},#{release_date},#{genre},#{title},#{creator},#{title_image},#{introduction},#{country_category},#{country_name},#{video},#{production},#{distribution},#{grade},
+		#{runtime},#{remake},#{cast},#{staff},#{awards},#{series},#{trilogy},#{soundtrack},#{amount},#{ref_video},#{category}, #{img_path})
+	</insert>
+	
+	<insert id="aniInsert" parameterType="contentDTO">
+		insert into CS_animation(content_num, year, release_date, category, genre, title, creator, title_image, introduction, country_category, country_name, video, production, distribution, grade, runtime, remake, cast, staff, series, trilogy, soundtrack, ref_video, img_path)
+		values (CS_animation_seq.nextval,#{year},#{release_date},#{category},#{genre},#{title},#{creator},#{title_image},#{introduction},#{country_category},#{country_name},#{video},#{production},#{distribution},#{grade},
+		#{runtime},#{remake},#{cast},#{staff},#{series},#{trilogy},#{soundtrack},#{ref_video}, #{img_path})
+	</insert>
+	
+	
+	<!-- 선택한 콘텐츠 검색 sql -->
+	<select id="musicSelect" parameterType="int" resultType="contentDTO">
+		select * from CS_music where content_num=#{num}
+	</select>
+	
+	<select id="movieSelect" parameterType="int" resultType="contentDTO">
+		select * from CS_movie where content_num=#{num}
+	</select>
+	
+	<select id="dramaSelect" parameterType="int" resultType="contentDTO">
+		select * from CS_drama where content_num=#{num}
+	</select>
+	
+	<select id="aniSelect" parameterType="int" resultType="contentDTO">
+		select * from CS_animation where content_num=#{num}
+	</select>
+	
+	
+	<!-- 콘텐츠 수정 sql -->
+	<update id="musicPicUpdate" parameterType="contentDTO">
+		update CS_music set year=#{year}, release_date=#{release_date}, genre=#{genre}, title=#{title}, creator=#{creator},title_image=#{title_image}, introduction=#{introduction}, country_category=#{country_category}, country_name=#{country_name},production=#{production}, distribution=#{distribution}, grade=#{grade},
+		remake=#{remake},staff=#{staff}, awards=#{awards},lyrics=#{lyrics}, album_title=#{album_title}, album_type=#{album_type}, soundtrack=#{soundtrack}, amount=#{amount}, ref_video=#{ref_video}, category=#{category}, video=#{video}, img_path=#{img_path}
+		where content_num=#{content_num}
+	</update>
+	<update id="moviePicUpdate" parameterType="contentDTO">
+		update CS_movie set year=#{year}, release_date=#{release_date}, genre=#{genre}, title=#{title}, creator=#{creator},title_image=#{title_image}, introduction=#{introduction}, country_category=#{country_category}, country_name=#{country_name},production=#{production}, distribution=#{distribution}, grade=#{grade},
+		runtime=#{runtime},remake=#{remake},cast=#{cast},staff=#{staff}, awards=#{awards}, series=#{series}, soundtrack=#{soundtrack}, amount=#{amount}, ref_video=#{ref_video}, category=#{category}, video=#{video}, img_path=#{img_path}
+		where content_num=#{content_num}
+	</update>
+	<update id="dramaPicUpdate" parameterType="contentDTO">
+		update CS_drama set year=#{year}, release_date=#{release_date}, genre=#{genre}, title=#{title}, creator=#{creator},title_image=#{title_image}, introduction=#{introduction}, country_category=#{country_category}, country_name=#{country_name},production=#{production}, distribution=#{distribution}, grade=#{grade},
+		runtime=#{runtime},remake=#{remake},cast=#{cast},staff=#{staff}, awards=#{awards},series=#{series},trilogy=#{trilogy},soundtrack=#{soundtrack}, amount=#{amount}, ref_video=#{ref_video}, category=#{category}, video=#{video}, img_path=#{img_path}
+		where content_num=#{content_num}
+	</update>
+	<update id="aniPicUpdate" parameterType="contentDTO">
+		update CS_animation set year=#{year}, release_date=#{release_date}, genre=#{genre}, title=#{title}, creator=#{creator}, introduction=#{introduction}, country_category=#{country_category}, country_name=#{country_name},production=#{production}, distribution=#{distribution}, grade=#{grade},
+		runtime=#{runtime},remake=#{remake},cast=#{cast},staff=#{staff},series=#{series}, soundtrack=#{soundtrack}, ref_video=#{ref_video}, category=#{category}, video=#{video}, img_path=#{img_path}
+		where content_num=#{content_num}
+	</update>
+	
+	<update id="musicUpdate" parameterType="contentDTO">
+		update CS_music set year=#{year}, release_date=#{release_date}, genre=#{genre}, title=#{title}, creator=#{creator},introduction=#{introduction}, country_category=#{country_category}, country_name=#{country_name},production=#{production}, distribution=#{distribution}, grade=#{grade},
+		remake=#{remake},staff=#{staff}, awards=#{awards},lyrics=#{lyrics}, album_title=#{album_title}, album_type=#{album_type}, soundtrack=#{soundtrack}, amount=#{amount}, ref_video=#{ref_video}, category=#{category}, video=#{video}
+		where content_num=#{content_num}
+	</update>
+	<update id="movieUpdate" parameterType="contentDTO">
+		update CS_movie set year=#{year}, release_date=#{release_date}, genre=#{genre}, title=#{title}, creator=#{creator}, introduction=#{introduction}, country_category=#{country_category}, country_name=#{country_name},production=#{production}, distribution=#{distribution}, grade=#{grade},
+		runtime=#{runtime},remake=#{remake},cast=#{cast},staff=#{staff}, awards=#{awards}, series=#{series}, soundtrack=#{soundtrack}, amount=#{amount}, ref_video=#{ref_video}, category=#{category}, video=#{video}
+		where content_num=#{content_num}
+	</update>
+	<update id="dramaUpdate" parameterType="contentDTO">
+		update CS_drama set year=#{year}, release_date=#{release_date}, genre=#{genre}, title=#{title}, creator=#{creator}, introduction=#{introduction}, country_category=#{country_category}, country_name=#{country_name},production=#{production}, distribution=#{distribution}, grade=#{grade},
+		runtime=#{runtime},remake=#{remake},cast=#{cast},staff=#{staff}, awards=#{awards},series=#{series},trilogy=#{trilogy},soundtrack=#{soundtrack}, amount=#{amount}, ref_video=#{ref_video}, category=#{category}, video=#{video}
+		where content_num=#{content_num}
+	</update>
+	<update id="aniUpdate" parameterType="contentDTO">
+		update CS_animation set year=#{year}, release_date=#{release_date}, genre=#{genre}, title=#{title}, creator=#{creator}, introduction=#{introduction}, country_category=#{country_category}, country_name=#{country_name},production=#{production}, distribution=#{distribution}, grade=#{grade},
+		runtime=#{runtime},remake=#{remake},cast=#{cast},staff=#{staff},series=#{series}, soundtrack=#{soundtrack}, ref_video=#{ref_video}, category=#{category}, video=#{video}
+		where content_num=#{content_num}
+	</update>
+	
+	
+	<!-- 콘텐츠 삭제 sql -->
+	<delete id="musicDelete" parameterType="int">
+		delete from CS_music where content_num=#{num}
+	</delete>
+	<delete id="movieDelete" parameterType="int">
+		delete from CS_movie where content_num=#{num}
+	</delete>
+	<delete id="dramaDelete" parameterType="int">
+		delete from CS_drama where content_num=#{num}
+	</delete>
+	<delete id="aniDelete" parameterType="int">
+		delete from CS_animation where content_num=#{num}
+	</delete>
+	<!-- 콘텐츠 삭제시 스크랩된 콘텐츠 모두 삭제 -->
+	<delete id="allDeleteScrape" parameterType="scrapeDTO">
+		delete from CS_scrape where content_num=#{content_num} and category=#{category}
+	</delete>
+	
+	<!-- 댓글 목록 -->
+	<select id="commentList" resultType="commentDTO" parameterType="commentDTO">
+		select * from(select comment_num, content, content_num, id, category, title, year, rownum r
+		from(select * from CS_comment order by comment_num desc)) where r between #{start} and #{end}
+	</select>
+	
+	<!-- 댓글 개수 -->
+	<select id="commentCount" resultType="int">
+		select count(*) from CS_comment
+	</select>
+	
+	<!-- 댓글 삭제 -->
+	<delete id="commentDelete" parameterType="int">
+		delete from CS_comment where comment_num=#{comment_num}
+	</delete>
+	
+	<!-- 0628 지원 수정 콘텐츠 개수 0705 지원 수정 -->
+	<select id="musicContentNum" parameterType="contentDTO" resultType="int">
+		select count(*) from CS_music where country_category=#{country_category} and year=#{year}
+	</select>
+	<select id="movieContentNum" parameterType="contentDTO" resultType="int">
+		select count(*) from CS_movie where country_category=#{country_category} and year=#{year}
+	</select>
+	<select id="dramaContentNum" parameterType="contentDTO" resultType="int">
+		select count(*) from CS_drama where country_category=#{country_category} and year=#{year}
+	</select>
+	<select id="aniContentNum" parameterType="contentDTO" resultType="int">
+		select count(*) from CS_animation where country_category=#{country_category} and year=#{year}
+	</select>
+	
+	<!-- 0630 지원 수정 삭제할 파일의 경로 검색 -->
+	<select id="deleteMusicFile" parameterType="int" resultType="String">
+		select img_path from CS_music where content_num=#{num}
+	</select>
+	<select id="deleteMovieFile" parameterType="int" resultType="String">
+		select img_path from CS_movie where content_num=#{num}
+	</select>
+	<select id="deleteDramaFile" parameterType="int" resultType="String">
+		select img_path from CS_drama where content_num=#{num}
+	</select>
+	<select id="deleteAniFile" parameterType="int" resultType="String">
+		select img_path from CS_animation where content_num=#{num}
+	</select>
+	
+	
+	<!-- 회원 목록 -->
+	<select id="getAllMember" resultType="memberDTO" parameterType="memberDTO">
+		select * from(select id, pw, name, birth, gender, email, reg_date, key, rownum r
+		from(select * from CS_member order by reg_date DESC)) where r between #{start} and #{end}
+	</select>
+	<select id="memberCount" resultType="int">
+		select count(*) from CS_member
+	</select>
+	
+	<!-- 회원 강제 탈퇴(삭제) -->
+	<delete id="deleteMember" parameterType="String">
+		delete from CS_member where id=#{id}
+	</delete>
+	<!-- 회원 탈퇴시 스크랩 삭제 -->
+	<delete id="deleteMemberScrape" parameterType="String">
+		delete from CS_scrape where id=#{id}
+	</delete>
+	
+	
+</mapper>

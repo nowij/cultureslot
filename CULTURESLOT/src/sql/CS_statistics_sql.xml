@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+  <mapper namespace="stat"> 
+	<!--  -->
+	<select id ="countAllmember" resultType="int">
+		select count(*) from cs_member
+	</select>
+	
+	<select id = "countAgeGroup" resultType="statDTO">
+		 select sum(age10) as age10,sum(age20) as age20, sum(age30) as age30, 
+				sum(age40) as age40,sum(age50) as age50, sum(age60) as age60,
+				sum(ageNone) as ageNone
+		from(
+		 select case when 1 &lt;= age and age &lt; 20 then 1 else 0 end AS age10,
+               case when 20 &lt;= age and age &lt; 30 then 1 else 0 end AS age20,
+               case when 30 &lt;= age and age &lt; 40 then 1 else 0 end AS age30,
+               case when 40 &lt;= age and age &lt; 50 then 1 else 0 end AS age40,
+               case when 50 &lt;= age and age &lt; 60 then 1 else 0 end AS age50,
+               case when 60 &lt;= age and age &lt; 150 then 1 else 0 end AS age60,
+               case when 150 &lt;= age or age &lt; 0 then 1 else 0 end AS ageNone
+          from(select (to_number(to_char(sysdate, 'YYYY')) - to_number(birth) + 1) as age from cs_member))
+	</select>
+	
+	<select id = "countMaleGroup" resultType="int">
+		select count(gender) as maleCount from cs_member where gender='남성' or gender='men'
+	</select>
+	<select id = "countFemaleGroup" resultType="int">
+		select count(gender) as femaleCount from cs_member where gender='여성' or gender='women'
+	</select>
+	
+	<select id="allScrapeCount" resultType="int">
+		select count(*) from cs_scrape
+	</select>
+	
+	<select id="allScrapeContentCount" resultType="int">
+		select count(*) from (select count(*) from cs_scrape group by title)
+	</select>
+	
+	<select id="selectAllScrapeTitleTop5" resultType="statDTO">
+		select * from 
+			(select category, title, year, count(title) as title_count from cs_scrape group by title, category, year order by title_count DESC) 
+		where ROWNUM &lt;= 5 
+	</select>
+	
+	<select id="selectAgeGroupAndGenderScrape" resultType="statDTO">
+		select ageGroup, gender, year, category, title, count(*) as title_count from
+		   (select a.ageGroup, a.gender, b.year, b.category, b.title, b.count from 
+		        (select id ,age, gender,
+		                case 
+		                    when 1 &lt;= age and age &lt; 20 then 10 
+		                    when 20 &lt;= age and age &lt; 30 then 20
+		                    when 30 &lt;= age and age &lt; 40 then 30
+		                    when 40 &lt;= age and age &lt; 50 then 40
+		                    when 50 &lt;= age and age &lt; 60 then 50
+		                    when 60 &lt;= age and age &lt; 150 then 60
+		                    when 150 &lt;= age or age &lt; 0 then 0
+		                end as ageGroup
+		                    from 
+		                        (select 
+		                                cm.*,
+		                                (to_number(to_char(sysdate, 'YYYY')) - to_number(birth) + 1) as age  
+		                        from cs_member cm where Key ='Y') 
+		        )a , 
+		        (
+		            select id, year, category, title,
+		                case when title is not null then 1 end as count
+		            from cs_scrape
+		        )b
+		    where a.id=b.id  order by a.ageGroup)
+  	  group by agegroup, gender,year,category,title order by title_count DESC
+	</select>
+	
+  </mapper>

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-config.dtd">
+
+<!-- 사용할 DTO를 별칭으로 선언 -->
+<configuration>
+	<typeAliases>
+		<typeAlias type="bean.CS_member.MemberDTO" alias="memberDTO"/>
+		<typeAlias type="bean.CS_main.SearchDTO" alias="searchDTO"/>
+		<typeAlias type="bean.CS_board.NoticeDTO" alias="noticeDTO"/>
+		<typeAlias type="bean.CS_main.ContentDTO" alias="contentDTO"/>
+		<typeAlias type="bean.CS_board.RequestContentDTO" alias="requestContentDTO" />
+		<typeAlias type="bean.CS_board.CommentDTO" alias="commentDTO"/>
+		<typeAlias type="bean.CS_member.ScrapeDTO" alias="ScrapeDTO"/>
+		<typeAlias type="bean.CS_board.RcCommentDTO" alias="RcCommentDTO"/>
+		<typeAlias type="bean.CS_admin.StatisticsDTO" alias="statDTO"/>
+	</typeAliases>
+	
+	<!-- 사용할 sql패키지 위치 -->
+	<mappers>
+		<mapper resource="/sql/CS_admin_sql.xml"/>
+		<mapper resource="/sql/CS_comment_sql.xml"/>
+		<mapper resource="/sql/CS_content_sql.xml"/>
+		<mapper resource="/sql/CS_main_sql.xml" />
+		<mapper resource="/sql/CS_member_sql.xml" />
+		<mapper resource="/sql/CS_rc_sql.xml"/>
+		<mapper resource="/sql/CS_rcComment_sql.xml" />
+		<mapper resource="/sql/CS_requestContent_sql.xml" />
+		<mapper resource="/sql/CS_scrape_sql.xml" />
+		<mapper resource="/sql/CS_statistics_sql.xml"/>
+		<mapper resource="/sql/Notice_sql.xml" />
+	</mappers>
+</configuration>
