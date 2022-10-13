@@ -1,0 +1,467 @@
+options(repos = c(CRAN = "http://cran.rstudio.com"))
+.libPaths("D:\\R\\library")
+install.packages("RSelenium")
+library(RSelenium)
+install.packages("stringr")
+library(stringr)
+
+#rm(list=ls())
+remDr <- remoteDriver(remoteServerAddr="localhost", port=4445, browserName="chrome")
+
+year <- c()
+y <- c()
+release_date <- c()
+release <- c()
+genre <- c()
+gen <- c()
+title <- c()
+tit <- c()
+creator <- c()
+creat <- c()
+introduction <- c()
+intro <- c()
+country_name <- c()
+country_n <- c()
+country_category <- c()
+country_cate <- c()
+cast <- c()
+c <- c()
+ca <- c()
+runtime <- c()
+runt <- c()
+grade <- c()
+grd <- c()
+awards <- c()
+awds <- c()
+production <- c()
+prod <- c()
+distribution <- c()
+dist <- c()
+amount <- c()
+amo <- c()
+i <- c()
+j <- c()
+test <- c()
+title_image <- c()
+title_image2 <- c()
+title_image3 <-
+titleimg <- NULL
+image <- c()
+staff <- c()
+p <- c()
+vid <- c()
+video <- c()
+ref_vid <- c()
+ref_video <- c()
+category <- c()
+video <- c()
+remake <- c()
+series <- c()
+soundtrack <- c()
+ref_video <- c()
+
+remDr$open()
+remDr$navigate("http://movie.naver.com/movie/sdb/browsing/bmovie_open.nhn")
+
+#old_content > table > tbody > tr:nth-child(1) > td:nth-child(2) > a
+#old_content > table > tbody > tr:nth-child(1) > td:nth-child(3) > a
+#old_content > table > tbody > tr:nth-child(1) > td:nth-child(4) > a
+
+for(i in 4:20) {
+  url <- "https://movie.naver.com/movie/sdb/browsing/bmovie.nhn?open=2013&page="
+  site <- paste(url, i, sep = "")
+  remDr$navigate(site)
+  Sys.sleep(2)
+  
+  for(j in 1:20) {
+    #old_content > ul > li:nth-child(1) > a
+    #old_content > ul > li:nth-child(2) > a
+    click <- remDr$findElements("css", paste("#old_content > ul > li:nth-child(",j,") > a"))  
+    sapply(click, function(x) x$clickElement())
+    Sys.sleep(2)
+    
+    # ¿¬µµ
+    #content > div.article > div.mv_info_area > div.mv_info > dl > dd:nth-child(2) > p > span:nth-child(4) > a:nth-child(1)
+    #content > div.article > div.mv_info_area > div.mv_info > dl > dd:nth-child(2) > p > span:nth-child(4) > a:nth-child(1)
+    y <- remDr$findElements("css", "div.article > div.mv_info_area > div.mv_info > dl > dd:nth-child(2) > p > span:nth-child(4) > a:nth-child(1)")
+    y <- unlist(sapply(y, function(x) x$getElementText()))
+    if(identical(y, NULL)) {
+      year <- c(year, "-")
+    }
+    else {
+      year <- c(year, y)
+    }
+    Sys.sleep(1)
+   
+    
+    # °³ºÀÀÏ
+    release <- remDr$findElements("css", "dd:nth-child(2) > p > span:nth-child(4)")
+    release <- unlist(sapply(release, function(x) x$getElementText()))
+    {if(identical(release, NULL)) {
+      release_date <- c(release_date, "-")
+    }
+    else {
+      release_date <- c(release_date, release)
+    }}
+    Sys.sleep(1)
+    
+    # Àå¸£
+    gen <- remDr$findElements("css", "dd:nth-child(2) > p > span:nth-child(1)")
+    gen <- unlist(sapply(gen, function(x) x$getElementText()))
+    if(identical(gen, NULL)) {
+      genre <- c(genre, "-")
+    }
+    else {
+      genre <- c(genre, gen)
+    }
+    Sys.sleep(1)
+   
+    
+    # ¿µÈ­ Á¦¸ñ
+    tit <- remDr$findElements("css", "#content > div.article > div.mv_info_area > div.mv_info > h3 > a:nth-child(1)")
+    tit <- unlist(sapply(tit, function(x) x$getElementText()))
+    {if(identical(tit, NULL)) {
+      title <- c(title, "-")
+    }
+    else {
+      title <- c(title, tit)
+    }}
+    Sys.sleep(1)
+    
+    #¿µÈ­Æ÷½ºÅÍ
+    titleimg <- remDr$getPageSource()[[1]]
+    titleimg <- read_html(titleimg, encoding = "CP949")
+    titleimg <- html_node(titleimg, "div.poster > a > img")
+    
+    if (is.na(titleimg)) {
+      titleimg <- remDr$getPageSource()[[1]]
+      titleimg <- read_html(titleimg, encoding = "CP949")
+      titleimg <- html_node(titleimg, "div.poster > img")
+    }
+    titleimg <- html_attr(titleimg, "src")
+    #title <- gsub("[[:punct:]]", "-", title)
+    
+    if(!is.na(titleimg)){
+      titleimg <- GET(titleimg)
+      titleimg <- na.omit(titleimg)
+      image <- c(titleimg)
+      titleimg = image$url
+      title_image2 <- c(title_image2, titleimg)
+      
+      for( p in 1:length(title_image2)) {
+        title_image3 <- strsplit(title_image2[p], split = '?', 2)
+        title_image <- c(title_image, unlist(title_image3[[1]][1]))
+      }
+    }
+    titleimg <- c()
+    
+    Sys.sleep(1)
+    
+    # °¨µ¶
+    #content > div.article > div.mv_info_area > div.mv_info > dl > dd:nth-child(4) > p
+    creat <- remDr$findElements("css", "div.mv_info > dl > dd:nth-child(4) > p")
+    creat <- unlist(sapply(creat, function(x) x$getElementText()))
+    {if(identical(creat, NULL)) {
+      creator <- c(creator, "-")
+    }
+      else {
+      creat <- gsub(",", " ", creat)
+      creator <- c(creator, creat)
+    }}
+    Sys.sleep(1)
+    
+    # ÁÙ°Å¸®
+    #content > div.article > div.section_group.section_group_frst > div:nth-child(1) > div > div.story_area > p
+    intro <- remDr$findElements("css", "div > div.story_area > p")
+    intro <- unlist(sapply(intro, function(x) x$getElementText()))
+    {if(identical(intro, NULL)) {
+      introduction <- c(introduction, "-")
+    }
+     else {
+      intro <- gsub("\n", "@", intro)
+      introduction <- c(introduction, intro)
+    }}
+    Sys.sleep(1)
+    
+    # ³ª¶ó
+    #content > div.article > div.mv_info_area > div.mv_info > dl > dd:nth-child(2) > p > span:nth-child(2) > a
+    #content > div.article > div.mv_info_area > div.mv_info > dl > dd:nth-child(2) > p > span:nth-child(2)
+    country_n <- remDr$findElements("css", "div.article > div.mv_info_area > div.mv_info > dl > dd:nth-child(2) > p > span:nth-child(2)")
+    country_n <- unlist(sapply(country_n, function(x) x$getElementText()))
+    country_n
+    country_n <- gsub(",", "/", country_n)
+    country_name <- c(country_name, country_n)
+    Sys.sleep(1)
+    
+    #±¹Àû ±¸ºÐ
+    if (identical(country_n, "ÇÑ±¹")) {
+      country_cate <- "±¹³»"
+      country_category <- c(country_category, country_cate)
+    }
+    else {
+      country_cate <- "ÇØ¿Ü"
+      country_category <- c(country_category, country_cate)
+    }
+    Sys.sleep(1)
+    
+    # Ãâ¿¬Áø
+    click <- remDr$findElements("css", paste("#movieEndTabMenu > li:nth-child(2) > a"))
+    sapply(click, function(x) x$clickElement())
+    click <- remDr$findElements("css", paste("#actorMore"))
+    sapply(click, function(x) x$clickElement())
+    webElem <- remDr$findElements("css", "#content > div.article > div.section_group.section_group_frst > div.obj_section.noline > div > div.lst_people_area.height100 > ul > li")
+    for(test in 1:length(webElem)){
+      webElem <- remDr$findElements("css", paste("div.lst_people_area.height100 > ul > li:nth-child(",test,") > div > a"))
+      c <- unlist(sapply(webElem, function(x) {x$getElementText()}))
+      ca <- paste(c, ca)
+    }
+    
+    {if(identical(ca, character(0))) {
+       cast <- c(cast, "-")
+       ca <- c()
+     }
+    else {
+      cast <- c(cast, ca)
+      ca <- c()
+    }}
+    Sys.sleep(1)
+    
+    # ½ºÅÂÇÁ
+    click <- remDr$findElements("css", paste("#staffMore"))
+    sapply(click, function(x) x$clickElement())
+    sta <- remDr$findElements("css", "div.article > div.section_group.section_group_frst > div:nth-child(3) > div > table")
+    sta <- unlist(sapply(sta, function(x) x$getElementText()))
+    sta <- gsub("±×¿Ü Ãâ¿¬ ¹× Á¦ÀÛÀÚ", " ", sta)
+    sta <- gsub("\n", " ", sta)
+    {if (identical(sta, character(0))) {
+      staff <- c(staff, "-")
+    }
+    else {
+      staff <- c(staff, sta)
+    }}
+    Sys.sleep(1)
+    
+    
+    #content > div.article > div.mv_info_area > div.mv_info > dl > dd:nth-child(2) > p > span:nth-child(1) > a
+    #content > div.article > div.mv_info_area > div.mv_info > dl > dd:nth-child(2) > p > span:nth-child(2) > a
+    
+    # »ó¿µ ½Ã°£
+    runt <- remDr$findElements("css", "dd:nth-child(2) > p > span:nth-child(3)")
+    runt <- unlist(sapply(runt, function(x) x$getElementText()))
+    {if(identical(runt, NULL)) {
+      runtime <- c(runtime, "-")
+    }
+    else if(str_detect(runt, "°³ºÀ")) {
+      runtime <- c(runtime, "-")
+    }
+    else {
+      runtime <- c(runtime, runt)
+    }}
+    Sys.sleep(1)
+    
+    
+    # »ó¿µ µî±Þ
+    #content > div.article > div.mv_info_area > div.mv_info > dl > dd:nth-child(8) > p > a:nth-child(1)
+    grd <- remDr$findElements("css", "div.mv_info > dl > dd:nth-child(8) > p > a:nth-child(1)")
+    grd <- unlist(sapply(grd, function(x) x$getElementText()))  
+    {if(identical(grd, NULL)) {
+      grade <- c(grade, "-")
+    }
+    else {
+      grade <- c(grade, grd)
+    }}
+    Sys.sleep(1)
+    
+    # ¼ö»ó ³»¿ª
+    #content > div.article > div:nth-child(7) > div:nth-child(1) > div
+    #content > div.article > div:nth-child(7) > div:nth-child(1) > div
+    click <- remDr$findElements("css", paste("#prizeMore"))
+    sapply(click, function(x) x$clickElement())
+    awds <- remDr$findElements("css", "div.article > div:nth-child(7) > div:nth-child(1) > div.awarded")
+    awds <- unlist(sapply(awds, function(x) x$getElementText()))
+    awds <- gsub("\n", "@", awds)
+    
+    if(identical(awds, character((0)))) {
+      awards <- c(awards, "-")
+      
+      #content > div.article > div:nth-child(7) > div:nth-child(1) > div > dl > dd:nth-child(2)
+      #content > div.article > div:nth-child(7) > div:nth-child(1) > div > dl > dd:nth-child(2)
+      prod <- remDr$findElements("css", "div.article > div:nth-child(7) > div:nth-child(1) > div > dl > dd:nth-child(2)")
+      prod <- unlist(sapply(prod, function(x) x$getElementText()))
+      
+      {if(identical(prod, NULL)) {
+        production <- c(production, "-")
+      }
+      
+      else {
+        production <- c(production, prod)
+      }}
+        
+      dist <- remDr$findElements("css", "div.article > div:nth-child(7) > div:nth-child(1) > div > dl > dd:nth-child(4)")
+      dist <- unlist(sapply(dist, function(x) x$getElementText()))
+      
+      {if(identical(dist, NULL)) {
+        distribution <- c(distribution, "-")
+      }
+      else {
+        distribution <- c(distribution, dist)
+      }}
+    }
+    
+    
+    else {
+      awards <- c(awards, awds)
+      prod <- remDr$findElements("css", "div:nth-child(7) > div:nth-child(2) > div > dl > dd:nth-child(2)")
+      prod <- unlist(sapply(prod, function(x) x$getElementText()))
+      {if(identical(prod, NULL)) {
+        production <- c(production, "-")
+      }
+      else {
+        production <- c(production, prod)
+      }}
+      #content > div.article > div:nth-child(7) > div:nth-child(2) > div > dl > dd:nth-child(4)
+      dist <- remDr$findElements("css", "div:nth-child(7) > div:nth-child(2) > div > dl > dd:nth-child(4)")
+      dist <- unlist(sapply(dist, function(x) x$getElementText()))
+      {if(identical(dist, NULL)) {
+        distribution <- c(distribution, "-")
+      }
+      else {
+        distribution <- c(distribution, dist)
+      }}
+    }
+    Sys.sleep(1)
+    
+    #if(identical(awds, character((0)))) {
+      #content > div.article > div:nth-child(7) > div:nth-child(1) > div > dl > dd:nth-child(2)
+      #content > div.article > div:nth-child(7) > div:nth-child(1) > div > dl > dd:nth-child(2)
+      #prod <- remDr$findElements("css", "div.article > div:nth-child(7) > div:nth-child(1) > div > dl > dd:nth-child(2)")
+      #prod <- unlist(sapply(prod, function(x) x$getElementText()))
+  
+      #if(identical(prod, character((0)))) {
+      #  production <- c("-")
+      #}
+      
+      #else if(!identical(prod, character((0)))) {
+      #  production <- c(production, prod)
+      #}
+ 
+      #content > div.article > div:nth-child(7) > div:nth-child(1) > div > dl > dd:nth-child(4)
+      #content > div.article > div:nth-child(7) > div:nth-child(1) > div > dl > dd:nth-child(4)
+      #dist <- remDr$findElements("css", "div.article > div:nth-child(7) > div:nth-child(1) > div > dl > dd:nth-child(4)")
+      #dist <- unlist(sapply(dist, function(x) x$getElementText()))
+    
+      #if(identical(dist, character((0)))) {
+      #  distribution <- c("-")
+      #}
+      #else if(!identical(dist, character((0)))) {
+      #  distribution <- c(distribution, dist)
+      #}     
+    
+    
+    
+    #else if(!identical(awds, character((0)))) {
+      #content > div.article > div:nth-child(7) > div:nth-child(2) > div > dl > dd:nth-child(2)
+      
+    #}
+    
+    # °ü°´ ¼ö
+    url <- "https://search.naver.com/search.naver?sm=top_hty&fbm=1&ie=utf8&query=¿µÈ­"
+    url <- paste(url,tit)
+    remDr$navigate(url)
+
+    amo <- remDr$findElements("css", "#_au_movie_info > div.info_main > dl.desc_detail > dd:nth-child(6) > span")
+    amo <- unlist(sapply(amo,function(x) x$getElementText()))
+    if (identical(amo, NULL)) {
+      amount <- c(amount, "-")
+    }
+    else {
+      amo <- gsub("[°¡-ÆR]", "", amo)
+      amo <- gsub(",", "", amo)
+      amount <- c(amount, amo)
+    }
+    
+    Sys.sleep(3)
+    
+    url <- "https://www.youtube.com/results?search_query=%EC%98%81%ED%99%94"
+    url <- paste(url,tit, "¿¹°íÆí")
+    remDr$navigate(url)
+    
+    webElem <- remDr$findElements("css", "#contents > ytd-video-renderer:nth-child(1)")
+    sapply(webElem, function(x) x$clickElement())
+    
+    webElem <- remDr$getCurrentUrl()
+    vid <- unlist(webElem)
+    video <- c(video, vid[[1]][1])
+    
+    Sys.sleep(1)
+    
+    url <- "https://www.youtube.com/results?search_query=%EC%98%81%ED%99%94"
+    url <- paste(url,tit)
+    remDr$navigate(url)
+  
+    webElem <- remDr$findElements("css", "#contents > ytd-video-renderer:nth-child(2)")
+    sapply(webElem, function(x) x$clickElement())
+    
+    webElem <- remDr$getCurrentUrl()
+    ref_vid <- unlist(webElem)
+    ref_video <- c(ref_video, ref_vid[[1]][1])
+    
+    Sys.sleep(1)
+    
+    if(identical(webElem, list())) {
+      remDr$executeScript("history.go(-6)")
+    }
+    else {
+      remDr$executeScript("history.go(-7)")
+    }
+    
+  #  if(j == 20) {
+      
+  #    for(k in 2:10)
+      #old_content > div.pagenavigation > table > tbody > tr > td:nth-child(2) > a
+  #    click <- remDr$findElements("css", paste("div.pagenavigation > table > tbody > tr > td:nth-child(2",k,") > a"))
+  #    sapply(click, function(x) x$clickElement())
+  #  }
+  } 
+
+category <- c("¿µÈ­")
+video <- c("-")
+remake <- c("-")
+series <- c("-")
+soundtrack <- c("-")
+ref_video <- c("-")
+
+} #¿µÈ­ »ó¼¼Á¤º¸ for Á¾·á
+
+for(i in 1:320) {
+  introduction <- gsub(",", "", introduction)
+  production <- gsub(",","", production)
+  distribution <- gsub(",", "", distribution)
+  
+}
+
+year
+release_date
+genre 
+title 
+title_image
+creator
+introduction
+country_name
+country_category
+cast
+runtime
+grade
+staff
+awards
+production
+distribution
+amount
+
+movie2018 <- data.frame(year, release_date, category, genre, title, creator, title_image, introduction, country_category, country_name, video, production, distribution, grade, runtime, remake, cast, staff, awards, series, soundtrack, amount, ref_video)
+write.csv(movie2018, "movie2018.csv")
+
+staff <- data.frame(staff)
+
+amount <- c(amount, "-")
+

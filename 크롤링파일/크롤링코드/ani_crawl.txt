@@ -1,0 +1,404 @@
+options(repos = c(CRAN = "http://cran.rstudio.com"))
+.libPaths("/Users/hm/Desktop/R/library")
+install.packages("curl")
+install.packages("RSelenium")
+install.packages("httr")
+install.packages("Rserve")
+install.packages("devtools")
+install.packages("rvest")
+install.packages("stringr")
+
+library(RSelenium)
+library(rvest)
+library(httr)
+library(devtools)
+library(curl)
+library(stringr)
+
+rm(list=ls())
+remDr <- remoteDriver(remoteServerAddr="localhost", port=4445, browserName="chrome")
+
+year = c()
+release_date = c()
+category = c()++
+genre = c()
+title = c()
+creator = c()
+title_image = c()
+introduction = c()
+country_category = c()
+country_name = c()
+video = c()
+production = c()
+distribution = c()
+grade = c()
+runtime = c()
+remake = c()
+cast = c()
+staff = c()
+staffs = c()
+series = c()
+trilogy = c() #총화수
+soundtrack = c()
+ref_video = c()
+read_count = c()
+scrape_count = c()
+staf = c()
+ani = NULL
+release = NULL
+anim = c()
+creat = NULL
+prod = NULL
+sta = NULL
+cas = NULL
+rem = NULL
+gen = NULL
+tril = NULL
+grd = NULL
+c <- c()
+ca <- c()
+titleimg = NULL
+r = NULL
+country_n = NULL
+tit = NULL
+
+test = 1
+j = 1
+i = 1
+t = 1
+d = 1
+a = 1
+
+body > div.layout-wrap > div > div > div.layout-line > div > ul > li:nth-child(73) > p.title > a
+
+remDr$open()
+remDr$navigate("http://anime.onnada.com/search.php?nav=search&c=&q=&at=1&date=2005&month=&rate=&ct=&ct2=")
+
+#애니매이션 크롤링 시작
+for(j in 6:68) {
+  #애니매이션 제목
+  tit <- remDr$findElements("css", paste("div.layout-line > div > ul > li:nth-child(",j,") > p.title > a", sep=""))
+  tit <- unlist(sapply(tit, function(x) x$getElementText()))
+  if(identical(tit, NULL)) {
+    title <- c(title, "-")
+  }
+    else{
+      title <- c(title, tit)
+    }
+  
+  Sys.sleep(1)
+  
+  #연도
+  year <- c(year,"2005")
+  year
+  category <- c(category, "애니메이션")
+  
+  #애니매이션 제목 클릭
+  click <- remDr$findElements("css", paste("div.layout-line > div.ani-list > ul > li:nth-child(",j,") > p.title > a", sep=""))
+  sapply(click, function(x) x$clickElement())
+  Sys.sleep(1)
+  i = 1
+  
+  ani <- remDr$findElements("css", "body > div.layout-wrap > div > div > article > div.view-info > div.list > p")
+  ani = unlist(sapply(ani, function(x) x$getElementText()))
+  ani = gsub("\n", "@", ani)
+  
+  for (i in 1:length(ani)) {
+    {if(str_detect(ani[i], "원작")) {
+      rem <- c(rem, ani[i])
+      rem <- gsub("-", "", rem)
+      
+    }
+      else if(str_detect(ani[i], "감독")) {
+        creat <- c(creat, ani[i])
+        Sys.sleep(1)
+      }
+      else if(str_detect(ani[i], "각본")) {
+        sta <- c(sta, ani[i])
+        Sys.sleep(1)
+      }
+      else if(str_detect(ani[i], "디자인")) {
+        sta <- c(sta, ani[i])
+        Sys.sleep(1)
+      }
+      else if(str_detect(ani[i], "음악-")) {
+        sta <- c(sta, ani[i])
+      Sys.sleep(1)
+      }
+      else if(str_detect(ani[i], "제작사")) {
+        prod <- gsub("제작사-", "", prod)
+        prod <- c(prod, ani[i])
+        
+      Sys.sleep(1)
+      }
+      else if(str_detect(ani[i], "장르")) {
+        gen <- c(gen, ani[i])
+        gen <- gsub("장르-", "", gen)
+        gen <- gsub("장르", "-", gen)
+        
+      Sys.sleep(1)
+      }
+      else if(str_detect(ani[i], "제작국가")) {
+        country_n <- c(country_n, ani[i])
+        country_name <- gsub("제작국가-", "", country_n)
+        Sys.sleep(1)
+      }
+      else if(str_detect(ani[i], "방영일")) {
+        release_date <- c(release_date, ani[i])
+        release_date <- gsub("방영일-", "", release_date)
+        Sys.sleep(1)
+      }
+      else if(str_detect(ani[i], "등급")) {
+        grd <- c(grd, ani[i])
+        grd <- gsub("등급-", "", grd)
+        grd <- gsub("등급", "-", grd)
+        Sys.sleep(1)
+      }
+      else if(str_detect(ani[i], "총화수")) {
+        tril <- c(tril, ani[i])
+        tril <- gsub("총화수-", "", tril)
+        tril <- gsub("총화수", "-", tril)
+        Sys.sleep(1)
+      }
+      else if(str_detect(ani[i], "원제")){
+        og = ani[i]
+        og = gsub("원제-", "", og)
+        Sys.sleep(1)
+      }}
+  }
+  
+  Sys.sleep(1)
+  
+  if(country_n == "제작국가-한국"){
+    country_category <- c(country_category, "국내")
+  }
+  else {
+    country_category <- c(country_category, "해외")
+  }
+  country_n = NULL
+  
+  Sys.sleep(1)
+  
+  if(identical(gen, NULL)) {
+    genre <- c(genre, "-")
+  }
+  else {
+    genre <- c(genre, gen)
+    gen <- c()
+  }
+  
+  Sys.sleep(1)
+  
+  if(identical(prod, NULL)) {
+    production <- c(production, "-")
+  }
+  else {
+    production <- c(production, prod)
+    prod <- c()
+  }
+  
+  Sys.sleep(1)
+  
+  if(identical(tril, NULL)) {
+    trilogy <- c(trilogy, "-")
+  }
+  else {
+    trilogy <- c(trilogy, tril)
+    tril <- c()
+  }
+  
+  Sys.sleep(1)
+  
+  if(identical(grd, NULL)) {
+    grade <- c(grade, "-")
+  }
+  else {
+    grade <- c(grade, grd)
+    grd <- c()
+  }
+  
+  Sys.sleep(1)
+  
+  if(identical(rem, NULL)) {
+    remake <- c(remake, "-")
+  }
+  else {
+    remake <- c(remake, rem)
+    rem <- c()
+  }
+  Sys.sleep(1)
+  
+  if(identical(creat, NULL)) {
+    creator <- c(creator, "-")
+  }
+  else {
+    creator <- c(creator, creat)
+    creat <- c()
+  }
+  Sys.sleep(1)
+  
+  
+  #애니매이션 포스터
+  titleimg <- remDr$getPageSource()[[1]]
+  titleimg <- read_html(titleimg, encoding = "CP949")
+  titleimg <- html_node(titleimg, "div.image > div > a > img")
+  titleimg = html_attr(titleimg, "src")
+  
+  if(is.na(titleimg)){
+    titleimg <- remDr$getPageSource()[[1]]
+    titleimg <- read_html(titleimg, encoding = "CP949")
+    titleimg <- html_node(titleimg, "div.image > div > a > img")
+  }
+  title = gsub("[[:punct:]]", "-", title)
+  
+  if(!is.na(titleimg)){
+    titleimg <- GET(titleimg)
+    titleimg <- na.omit(titleimg)
+    image = c(titleimg)
+    titleimg = image$url
+    title_image = c(title_image, titleimg)
+  }
+  
+  Sys.sleep(1)
+  #줄거리
+  #animeContents
+  #animeContents
+  intro = remDr$findElements("css","#animeContents")
+  intro = unlist(sapply(intro, function(x) x$getElementText()))
+  introduction = c(introduction, intro)
+  introduction <- gsub("\n", "@", introduction)
+  intro = NULL
+  
+  Sys.sleep(1)
+  
+  #등장인물
+  #current_cha54007 > div.list
+  #current_cha53590 > div.list
+  c = remDr$findElements("css","div.view-chacon > ul > li > div.list")
+  c = unlist(sapply(c, function(x) x$getElementText()))
+  c = gsub("\nCV", " / 성우", c)
+  
+  for (test in 1:length(c)) {
+    ca <- paste(ca, c[test])  
+  }
+  cast <- c(cast, ca)
+  ca <- c()
+  
+  if (is.na(cast)) {
+    cast <- c(cast, "-")
+    ca <- c()
+  }
+  Sys.sleep(1)
+
+  # 스태프 묶기 
+  for (test in 1:length(sta)) {
+    staf <- paste(staf, sta[test])
+  }
+  staff <- c(staff, staf)
+  staf <- c()
+  
+  if (identical(sta, NULL)) {
+    staff <- c(staff, "-")
+    staf <- c()
+  }
+  sta = c()
+  Sys.sleep(1)
+  
+  
+  distribution <- c(distribution, "-")
+  runtime <- c(runtime, "-")
+  series <- c(series, "-")
+  soundtrack <- c(soundtrack, "-")
+  read_count <- c(read_count, "0")
+  scrape_count <- c(scrape_count, "0")
+#유튜브 예고편 검색
+  url = "http://www.youtube.com/results?search_query="
+  url = paste(url, og,"PV")
+  remDr$navigate(url)
+  Sys.sleep(1)
+  
+  webElem = remDr$findElements("css", "#contents > ytd-video-renderer:nth-child(1)")
+  sapply(webElem, function(x) x$clickElement())
+  
+  webElem = remDr$getCurrentUrl()
+  vid = unlist(webElem)
+  video = c(video, vid[[1]][1])
+  
+  Sys.sleep(2)
+  
+  url = "http://www.youtube.com/results?search_query="
+  url = paste(url, og)
+  remDr$navigate(url)
+  
+  Sys.sleep(1)
+  
+  webElem = remDr$findElements("css", "#contents > ytd-video-renderer:nth-child(3)")
+  sapply(webElem, function(x) x$clickElement())
+  
+  webElem = remDr$getCurrentUrl()
+  ref_vid = unlist(webElem)
+  
+  if(!str_detect(vid, "result")){
+    if(str_detect(ref_vid, "result")){
+      ref_video = c(ref_video, "-")
+      remDr$navigate("http://anime.onnada.com/search.php?nav=search&c=&q=&at=1&date=2005&month=&rate=&ct=&ct2=")
+      Sys.sleep(2)
+    }else{
+      webElem = remDr$getCurrentUrl()
+      ref_vid = unlist(webElem)
+      ref_video = c(ref_video, ref_vid[[1]][1])
+      remDr$navigate("http://anime.onnada.com/search.php?nav=search&c=&q=&at=1&date=2005&month=&rate=&ct=&ct2=")
+      Sys.sleep(2)
+    }
+  }
+  else if(str_detect(vid, "result")){
+    if(str_detect(ref_vid, "result")){
+      ref_video = c(ref_video, "-")
+      remDr$navigate("http://anime.onnada.com/search.php?nav=search&c=&q=&at=1&date=2005&month=&rate=&ct=&ct2=")
+      Sys.sleep(2)
+    }else{
+      webElem = remDr$getCurrentUrl()
+      ref_vid = unlist(webElem)
+      ref_video = c(ref_video, ref_vid[[1]][1])
+      remDr$navigate("http://anime.onnada.com/search.php?nav=search&c=&q=&at=1&date=2005&month=&rate=&ct=&ct2=")
+      Sys.sleep(1)
+    }
+  }
+}
+
+
+content_num
+year
+release_date
+category
+genre
+title
+creator
+title_image
+introduction
+country_category
+country_name
+video
+production
+distribution
+grade
+runtime
+remake
+cast
+staff
+series
+trilogy
+soundtrack
+ref_video
+read_count
+scrape_count
+i = 1
+
+for(i in 1:118){
+ country_name = c(country_name, "일본")
+ #year = c(year, "2008")
+}
+
+ani = data.frame(year, release_date, category, genre, title, creator, title_image, introduction, country_category, country_name, video, production, distribution, grade, runtime, remake, cast, staff, series, trilogy, soundtrack, ref_video, read_count, scrape_count)
+write.csv(ani, "/Users/hm/Desktop/save/ani2018.csv")
+

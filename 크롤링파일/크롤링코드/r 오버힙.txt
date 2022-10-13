@@ -1,0 +1,5 @@
+#over heap ¶¹À» ¶§
+options(java.parameters = "-Xmx8g")
+library(RJDBC)
+options(Java.parameters = c("-XX:+UseConcMarkSweepGC", "-Xmx8192m"))
+library(xlsx)
